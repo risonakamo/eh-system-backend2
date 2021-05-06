@@ -1,0 +1,15 @@
+[package]
+name="eh-system-backend2"
+version="0.0.0"
+edition="2018"
+
+[lib]
+name="eh_system"
+path="lib/lib.rs"
+
+[dependencies]
+tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread"]}
+
+[[bin]]
+name="thumbnail"
+path="tests/thumbnail.rs"
