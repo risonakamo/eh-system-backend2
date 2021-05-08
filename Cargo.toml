@@ -9,6 +9,7 @@ path="lib/lib.rs"
 
 [dependencies]
 tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread","time"]}
+itertools="0.10.0"
 
 [[bin]]
 name="tokio_test"

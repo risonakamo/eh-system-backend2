@@ -6,10 +6,13 @@ use std::io;
 use tokio::process::{Command};
 use tokio::task::JoinHandle;
 use tokio::join;
+use itertools::{Itertools,IntoChunks};
+use std::vec::IntoIter;
 
 /// generate thumbnails for a single directory, relative to a base path. reconstructs the path structure
 /// of basepath+imagepath in the thumbnail base path, and places images in that location.
-pub async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,imagepath:&str)
+pub async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
+    imagepath:&str,batchsize:u32,height:u32)
 {
     // full path to the target image dir
     let fullImagePath:PathBuf=Path::new(basepath).join(imagepath);
@@ -36,18 +39,35 @@ pub async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,imagepath:&
 
     create_dir_all(&thumbnailOutputDir).unwrap();
 
-    // TODO: generate thumbnails in batches so dont break system with many spawned processes
-    genMultipleThumbnails(
+    genMultipleThumbnailsBatches(
         imagePaths,
         thumbnailOutputDir.to_str().unwrap().to_string(),
-        4,
-        200
+        batchsize,
+        height
     ).await;
 }
 
-/// generate thumbnails for a vector of targets. places all into the same output directory. specify batch
-/// size for number of simultaneous ffmpeg processes.
-async fn genMultipleThumbnails(targets:Vec<PathBuf>,outputdir:String,batchSize:u32,height:u32)
+/// generate thumbnails for vector of targets, with a max number of ffmpeg processes.
+async fn genMultipleThumbnailsBatches(targets:Vec<PathBuf>,outputdir:String,
+    batches:u32,height:u32)
+{
+    let batchCount=targets.len()/batches as usize;
+    let chunks:IntoChunks<IntoIter<PathBuf>>=targets.into_iter().chunks(batches as usize);
+
+    for (i,x) in chunks.into_iter().enumerate()
+    {
+        println!("generating {}/{}",i,batchCount);
+
+        genMultipleThumbnails(
+            x.collect(),
+            outputdir.clone(),
+            height
+        ).await;
+    }
+}
+
+/// generate thumbnails for a vector of targets. places all into the same output directory.
+async fn genMultipleThumbnails(targets:Vec<PathBuf>,outputdir:String,height:u32)
 {
     let thumbnailTasks:Vec<JoinHandle<()>>=targets.into_iter()
     .map(|x:PathBuf|->JoinHandle<()> {
@@ -98,7 +118,9 @@ pub mod test
         genAlbumThumbnails(
             "testfiles2",
             "testthumbnaildata",
-            "ctrlz77/double"
+            "ctrlz77/double/1",
+            1,
+            200
         ).await;
     }
 }
