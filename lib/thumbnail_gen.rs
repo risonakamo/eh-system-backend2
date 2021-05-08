@@ -3,7 +3,7 @@
 use std::path::{Path,PathBuf};
 use std::fs::{read_dir,DirEntry,create_dir_all};
 use std::io;
-use tokio::process::{Command};
+use tokio::process::{Command,Child};
 use tokio::task::JoinHandle;
 use tokio::join;
 use itertools::{Itertools,IntoChunks};
@@ -51,12 +51,12 @@ pub async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
 async fn genMultipleThumbnailsBatches(targets:Vec<PathBuf>,outputdir:String,
     batches:u32,height:u32)
 {
-    let batchCount=targets.len()/batches as usize;
+    let batchCount:u32=(targets.len() as f32/batches as f32).ceil() as u32;
     let chunks:IntoChunks<IntoIter<PathBuf>>=targets.into_iter().chunks(batches as usize);
 
     for (i,x) in chunks.into_iter().enumerate()
     {
-        println!("generating {}/{}",i,batchCount);
+        println!("generating {}/{}",i+1,batchCount);
 
         genMultipleThumbnails(
             x.collect(),
@@ -96,7 +96,7 @@ async fn genThumbnail(target:&str,outputDir:&str,height:u32)
         Path::new(&target).file_stem().unwrap()
     ).with_extension("png").to_str().unwrap().to_string();
 
-    let mut ffmpeg=Command::new("ffmpeg")
+    let mut ffmpeg:Child=Command::new("ffmpeg")
         .arg("-y")
         .args(&["-loglevel","error"])
         .args(&["-i",&target])
@@ -119,7 +119,7 @@ pub mod test
             "testfiles2",
             "testthumbnaildata",
             "ctrlz77/double/1",
-            1,
+            3,
             200
         ).await;
     }
