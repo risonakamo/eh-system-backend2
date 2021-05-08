@@ -10,6 +10,7 @@ path="lib/lib.rs"
 [dependencies]
 tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread","time"]}
 itertools="0.10.0"
+async-recursion="0.3.2"
 
 [[bin]]
 name="recurse_thumbnail_gen_test"

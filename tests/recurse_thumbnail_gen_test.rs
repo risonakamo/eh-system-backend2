@@ -1,7 +1,7 @@
-use eh_system::thumbnail_gen::test::test2;
+use eh_system::thumbnail_gen::test::test3;
 
 #[tokio::main]
 async fn main()
 {
-    test2().await;
+    test3().await;
 }

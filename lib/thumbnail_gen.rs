@@ -8,11 +8,37 @@ use tokio::task::JoinHandle;
 use tokio::join;
 use itertools::{Itertools,IntoChunks};
 use std::vec::IntoIter;
+use async_recursion::async_recursion;
+
+use crate::image_data::getSubAlbums;
 
 /// generate thumbnails for all albums under the target image path.
-pub fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepath:&str,batchsize:u32,height:u32)
+pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepath:&str,
+    batchsize:u32,height:u32)
 {
+    println!("generating {}...",imagepath);
 
+    // generate for self
+    genAlbumThumbnails(
+        basepath,
+        thumbnailBasePath,
+        imagepath,
+        batchsize,
+        height
+    ).await;
+
+    let subalbums:Vec<PathBuf>=getSubAlbums(basepath,imagepath);
+
+    for x in subalbums
+    {
+        genAlbumThumbnailsRec(
+            basepath,
+            thumbnailBasePath,
+            x.to_str().unwrap(),
+            batchsize,
+            height
+        ).await;
+    }
 }
 
 /// generate thumbnails for a single directory, relative to a base path. reconstructs the path structure
@@ -117,7 +143,7 @@ async fn genThumbnail(target:&str,outputDir:&str,height:u32)
 
 pub mod test
 {
-    use super::genAlbumThumbnails;
+    use super::{genAlbumThumbnails,genAlbumThumbnailsRec};
     use crate::image_data::getSubAlbums;
 
     pub async fn test()
@@ -139,5 +165,16 @@ pub mod test
         );
 
         println!("{:#?}",r);
+    }
+
+    pub async fn test3()
+    {
+        genAlbumThumbnailsRec(
+            "testfiles2",
+            "testthumbnaildata",
+            "ctrlz77",
+            3,
+            200
+        ).await;
     }
 }
