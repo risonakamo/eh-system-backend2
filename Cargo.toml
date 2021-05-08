@@ -8,7 +8,11 @@ name="eh_system"
 path="lib/lib.rs"
 
 [dependencies]
-tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread"]}
+tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread","time"]}
+
+[[bin]]
+name="tokio_test"
+path="tests/tokio_test.rs"
 
 [[bin]]
 name="image_data_test"
