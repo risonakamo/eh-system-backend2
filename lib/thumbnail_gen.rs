@@ -118,6 +118,7 @@ async fn genThumbnail(target:&str,outputDir:&str,height:u32)
 pub mod test
 {
     use super::genAlbumThumbnails;
+    use crate::image_data::getSubAlbums;
 
     pub async fn test()
     {
@@ -128,5 +129,15 @@ pub mod test
             3,
             200
         ).await;
+    }
+
+    pub async fn test2()
+    {
+        let r=getSubAlbums(
+            "testfiles2",
+            "ctrlz77"
+        );
+
+        println!("{:#?}",r);
     }
 }

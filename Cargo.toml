@@ -12,16 +12,20 @@ tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread","time
 itertools="0.10.0"
 
 [[bin]]
-name="tokio_test"
-path="tests/tokio_test.rs"
+name="recurse_thumbnail_gen_test"
+path="tests/recurse_thumbnail_gen_test.rs"
 
-[[bin]]
-name="image_data_test"
-path="tests/image_data_test.rs"
+# [[bin]]
+# name="tokio_test"
+# path="tests/tokio_test.rs"
 
-[[bin]]
-name="thumbnail_album_gen_test"
-path="tests/thumbnail_album_gen_test.rs"
+# [[bin]]
+# name="image_data_test"
+# path="tests/image_data_test.rs"
+
+# [[bin]]
+# name="thumbnail_album_gen_test"
+# path="tests/thumbnail_album_gen_test.rs"
 
 # [[bin]]
 # name="thumbnail"
