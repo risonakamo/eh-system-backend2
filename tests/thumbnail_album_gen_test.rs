@@ -1,6 +1,7 @@
 use eh_system::thumbnail_gen::test::test;
 
-fn main()
+#[tokio::main]
+async fn main()
 {
-    test();
+    test().await;
 }
