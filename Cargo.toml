@@ -11,5 +11,9 @@ path="lib/lib.rs"
 tokio={version="1.5.0",features=["process","macros","rt","rt-multi-thread"]}
 
 [[bin]]
-name="thumbnail"
-path="tests/thumbnail.rs"
+name="image_data_test"
+path="tests/image_data_test.rs"
+
+# [[bin]]
+# name="thumbnail"
+# path="tests/thumbnail.rs"
