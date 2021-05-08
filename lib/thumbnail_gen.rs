@@ -51,30 +51,26 @@ async fn genMultipleThumbnails(targets:Vec<PathBuf>,outputdir:String,batchSize:u
 {
     let thumbnailTasks:Vec<JoinHandle<()>>=targets.into_iter()
     .map(|x:PathBuf|->JoinHandle<()> {
-        let target:String=x.clone().to_str().unwrap().to_string();
         let outputdir2:String=outputdir.clone();
-        let height2:u32=height.clone();
-
-        println!("generating {}",target);
 
         return tokio::spawn(async move {
             genThumbnail(
-                target,
-                outputdir2,
-                height2
+                x.to_str().unwrap(),
+                &outputdir2,
+                height
             ).await;
         });
     }).collect();
 
     for x in thumbnailTasks
     {
-        join!(x);
+        let _res=join!(x);
     }
 }
 
 /// generate a thumbnail for the given target image and place it into the target output folder,
 /// with the same name as the original, but with png file extension.
-async fn genThumbnail(target:String,outputDir:String,height:u32)
+async fn genThumbnail(target:&str,outputDir:&str,height:u32)
 {
     let outputPath:String=Path::new(&outputDir).join(
         Path::new(&target).file_stem().unwrap()
@@ -102,7 +98,7 @@ pub mod test
         genAlbumThumbnails(
             "testfiles2",
             "testthumbnaildata",
-            "ctrlz77/double/1"
+            "ctrlz77/double"
         ).await;
     }
 }
