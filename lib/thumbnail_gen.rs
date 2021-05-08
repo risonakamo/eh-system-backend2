@@ -9,9 +9,15 @@ use tokio::join;
 use itertools::{Itertools,IntoChunks};
 use std::vec::IntoIter;
 
+/// generate thumbnails for all albums under the target image path.
+pub fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepath:&str,batchsize:u32,height:u32)
+{
+
+}
+
 /// generate thumbnails for a single directory, relative to a base path. reconstructs the path structure
 /// of basepath+imagepath in the thumbnail base path, and places images in that location.
-pub async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
+async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
     imagepath:&str,batchsize:u32,height:u32)
 {
     // full path to the target image dir
