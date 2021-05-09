@@ -5,6 +5,7 @@ use std::fs::{DirEntry,read_dir,metadata,Metadata};
 use chrono::{DateTime,Local};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use std::io;
 
 use crate::image_data::image_data::{getAlbumsWithBaseFlat};
 
@@ -12,9 +13,23 @@ use crate::types::album_info_types::{AlbumInfo,ImmediateAlbumInfo};
 use crate::types::image_data_types::{FlatRawAlbum};
 
 /// get album info array for all albums at the target path relative to base path.
-fn getAlbumInfo(basepath:&str,path:&str)->Vec<AlbumInfo>
+pub fn getAlbumInfo(basepath:&str,path:&str)->Vec<AlbumInfo>
 {
+    let fulltarget:PathBuf=Path::new(basepath).join(path);
 
+    return read_dir(fulltarget).unwrap().filter_map(|x:io::Result<DirEntry>|->Option<AlbumInfo> {
+        let thepath:PathBuf=x.unwrap().path();
+
+        if thepath.is_file()
+        {
+            return None;
+        }
+
+        return Some(getAlbumInfoSingle(
+            basepath,
+            thepath.strip_prefix(basepath).unwrap().to_str().unwrap()
+        ));
+    }).collect();
 }
 
 /// get album info for target basepath/path
@@ -65,4 +80,19 @@ fn getImmediateAlbumInfo(target:&PathBuf)->ImmediateAlbumInfo
         album:isAlbum,
         date:datestring
     };
+}
+
+pub mod test
+{
+    use super::getAlbumInfo;
+
+    pub fn test()
+    {
+        let r=getAlbumInfo(
+            "testfiles2",
+            "ctrlz77/double"
+        );
+
+        println!("{:#?}",r);
+    }
 }

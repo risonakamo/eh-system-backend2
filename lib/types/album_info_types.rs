@@ -1,4 +1,5 @@
 /// album info for a album from file
+#[derive(Debug)]
 pub struct AlbumInfo
 {
     pub title:String,

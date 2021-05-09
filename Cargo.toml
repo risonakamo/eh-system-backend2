@@ -15,8 +15,12 @@ rand="0.8.3"
 chrono="0.4.19"
 
 [[bin]]
-name="get_albums_flat_test"
-path="tests/get_albums_flat_test.rs"
+name="get_album_info_test"
+path="tests/get_album_info_test.rs"
+
+# [[bin]]
+# name="get_albums_flat_test"
+# path="tests/get_albums_flat_test.rs"
 
 [[bin]]
 name="recurse_thumbnail_gen_test"
