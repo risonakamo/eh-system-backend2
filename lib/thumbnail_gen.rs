@@ -10,7 +10,7 @@ use itertools::{Itertools,IntoChunks};
 use std::vec::IntoIter;
 use yansi::Paint;
 
-use crate::image_data::getSubAlbumsRec;
+use crate::image_data::subalbum::getSubAlbumsRec;
 
 /// generate thumbnails for all albums under the target image path.
 pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepath:&str,
@@ -142,7 +142,7 @@ async fn genThumbnail(target:&str,outputDir:&str,height:u32)
 pub mod test
 {
     use super::{genAlbumThumbnails,genAlbumThumbnailsRec};
-    use crate::image_data::getSubAlbums;
+    use crate::image_data::subalbum::getSubAlbums;
 
     pub async fn test()
     {
