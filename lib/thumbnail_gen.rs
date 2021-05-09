@@ -8,16 +8,13 @@ use tokio::task::JoinHandle;
 use tokio::join;
 use itertools::{Itertools,IntoChunks};
 use std::vec::IntoIter;
-use async_recursion::async_recursion;
 
-use crate::image_data::getSubAlbums;
+use crate::image_data::getSubAlbumsRec;
 
 /// generate thumbnails for all albums under the target image path.
 pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepath:&str,
     batchsize:u32,height:u32)
 {
-    println!("generating {}...",imagepath);
-
     // generate for self
     genAlbumThumbnails(
         basepath,
@@ -27,11 +24,9 @@ pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepat
         height
     ).await;
 
-    let subalbums:Vec<PathBuf>=getSubAlbums(basepath,imagepath);
-
-    for x in subalbums
+    for x in getSubAlbumsRec(basepath,imagepath)
     {
-        genAlbumThumbnailsRec(
+        genAlbumThumbnails(
             basepath,
             thumbnailBasePath,
             x.to_str().unwrap(),
@@ -46,6 +41,8 @@ pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepat
 async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
     imagepath:&str,batchsize:u32,height:u32)
 {
+    println!("generating {}",imagepath);
+
     // full path to the target image dir
     let fullImagePath:PathBuf=Path::new(basepath).join(imagepath);
 
@@ -83,12 +80,12 @@ async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
 async fn genMultipleThumbnailsBatches(targets:Vec<PathBuf>,outputdir:String,
     batches:u32,height:u32)
 {
-    let batchCount:u32=(targets.len() as f32/batches as f32).ceil() as u32;
+    // let batchCount:u32=(targets.len() as f32/batches as f32).ceil() as u32;
     let chunks:IntoChunks<IntoIter<PathBuf>>=targets.into_iter().chunks(batches as usize);
 
-    for (i,x) in chunks.into_iter().enumerate()
+    for x in chunks.into_iter()
     {
-        println!("generating {}/{}",i+1,batchCount);
+        // println!("generating {}/{}",i+1,batchCount);
 
         genMultipleThumbnails(
             x.collect(),
@@ -170,10 +167,10 @@ pub mod test
     pub async fn test3()
     {
         genAlbumThumbnailsRec(
-            "testfiles2",
+            r"C:\Users\ktkm\Desktop\h\cg",
             "testthumbnaildata",
-            "ctrlz77",
-            3,
+            ".",
+            20,
             200
         ).await;
     }
