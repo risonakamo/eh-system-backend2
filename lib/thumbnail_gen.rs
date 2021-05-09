@@ -1,4 +1,4 @@
-/// thumbnail generation library
+// thumbnail generation library
 
 use std::path::{Path,PathBuf};
 use std::fs::{read_dir,DirEntry,create_dir_all};

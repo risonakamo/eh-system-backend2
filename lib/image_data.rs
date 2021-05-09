@@ -1,4 +1,4 @@
-/// library for retrieving image data from file system structure
+// library for retrieving image data from file system structure
 
 use std::path::{Path,PathBuf};
 use std::fs::{read_dir,DirEntry};
