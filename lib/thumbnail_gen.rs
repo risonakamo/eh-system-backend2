@@ -8,6 +8,7 @@ use tokio::task::JoinHandle;
 use tokio::join;
 use itertools::{Itertools,IntoChunks};
 use std::vec::IntoIter;
+use yansi::Paint;
 
 use crate::image_data::getSubAlbumsRec;
 
@@ -41,7 +42,7 @@ pub async fn genAlbumThumbnailsRec(basepath:&str,thumbnailBasePath:&str,imagepat
 async fn genAlbumThumbnails(basepath:&str,thumbnailBasePath:&str,
     imagepath:&str,batchsize:u32,height:u32)
 {
-    println!("generating {}",imagepath);
+    println!("generating {}",Paint::yellow(imagepath));
 
     // full path to the target image dir
     let fullImagePath:PathBuf=Path::new(basepath).join(imagepath);
@@ -123,7 +124,7 @@ async fn genThumbnail(target:&str,outputDir:&str,height:u32)
 {
     let outputPath:String=Path::new(&outputDir).join(
         Path::new(&target).file_stem().unwrap()
-    ).with_extension("png").to_str().unwrap().to_string();
+    ).with_extension("jpg").to_str().unwrap().to_string();
 
     let mut ffmpeg:Child=Command::new("ffmpeg")
         .arg("-y")
@@ -167,7 +168,7 @@ pub mod test
     pub async fn test3()
     {
         genAlbumThumbnailsRec(
-            r"C:\Users\ktkm\Desktop\h\cg",
+            r"C:\Users\ktkm\Desktop\h\3d",
             "testthumbnaildata",
             ".",
             20,
