@@ -8,3 +8,11 @@ pub struct AlbumInfo
     pub date:String,
     pub album:bool
 }
+
+/// album info subset
+pub struct ImmediateAlbumInfo
+{
+    pub immediateItems:u32,
+    pub album:bool,
+    pub date:String
+}
