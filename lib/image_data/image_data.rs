@@ -3,8 +3,23 @@
 use std::path::{Path,PathBuf};
 use std::fs::{read_dir,DirEntry};
 use std::io;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
-use crate::types::image_data_types::AlbumList;
+use crate::types::image_data_types::{AlbumList,FlatRawAlbum};
+
+/// get flattened album list at specified base path. shuffles if shuffle is set.
+pub fn getAlbumsWithBaseFlat(basepath:&str,path:&str,shuffle:bool)->FlatRawAlbum
+{
+    let mut albumlist=getAlbumsWithBase(basepath,path);
+
+    if shuffle
+    {
+        albumlist.shuffle(&mut thread_rng());
+    }
+
+    return albumlist.into_iter().flatten().collect();
+}
 
 /// get albums of a path represented by a basename and a path.
 pub fn getAlbumsWithBase(basepath:&str,path:&str)->AlbumList
@@ -46,11 +61,17 @@ fn getAlbums(targetpath:PathBuf)->AlbumList
 
 pub mod test
 {
-    use super::getAlbumsWithBase;
+    use super::{getAlbumsWithBase,getAlbumsWithBaseFlat};
 
     pub fn test()
     {
         let r=getAlbumsWithBase(r"testfiles2","");
+        println!("{:#?}",r);
+    }
+
+    pub fn test2()
+    {
+        let r=getAlbumsWithBaseFlat("testfiles2","",true);
         println!("{:#?}",r);
     }
 }
