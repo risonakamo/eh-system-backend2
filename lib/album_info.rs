@@ -45,7 +45,10 @@ fn getAlbumInfoSingle(basepath:&str,target:&str)->AlbumInfo
         title:fulltarget.file_name().unwrap().to_str().unwrap().to_string(),
         items:albumImages.len() as u32,
         immediateItems:imInfo.immediateItems,
-        img:albumImages.choose(&mut thread_rng()).unwrap().clone(),
+        img:fixExtension(
+            albumImages.choose(&mut thread_rng()).unwrap(),
+            "jpg"
+        ),
         date:imInfo.date,
         album:imInfo.album
     };
@@ -80,6 +83,12 @@ fn getImmediateAlbumInfo(target:&PathBuf)->ImmediateAlbumInfo
         album:isAlbum,
         date:datestring
     };
+}
+
+/// change extension of a string path
+fn fixExtension(path:&str,newExtension:&str)->String
+{
+    return Path::new(path).with_extension(newExtension).to_str().unwrap().to_string();
 }
 
 pub mod test

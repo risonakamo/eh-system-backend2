@@ -29,8 +29,6 @@ fn getAlbumInfo_api(albumpath:String)->JsonValue
         albuminfo
     );
 
-    println!("{:#?}",albuminfoFixedUrls);
-
     return json!(albuminfoFixedUrls);
 }
 
