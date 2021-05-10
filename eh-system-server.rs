@@ -3,6 +3,10 @@
 
 use rocket::{post,routes};
 
+use eh_system::album_info::{getAlbumInfo};
+use eh_system::types::album_info_types::AlbumInfo;
+use eh_system::url_conversion::rebaseAlbumInfos;
+
 #[post("/get-album",format="text/plain",data="<albumpath>")]
 fn getAlbum_api(albumpath:String)
 {
@@ -12,7 +16,18 @@ fn getAlbum_api(albumpath:String)
 #[post("/get-album-info",format="text/plain",data="<albumpath>")]
 fn getAlbumInfo_api(albumpath:String)
 {
-    println!("info {}",albumpath);
+    let albuminfo:Vec<AlbumInfo>=getAlbumInfo(
+        r"testfiles2",
+        &albumpath
+    );
+
+    let albuminfoFixedUrls:Vec<AlbumInfo>=rebaseAlbumInfos(
+        r"testfiles2",
+        "/thumbnaildata",
+        albuminfo
+    );
+
+    println!("got info {:#?}",albuminfoFixedUrls);
 }
 
 fn main()
