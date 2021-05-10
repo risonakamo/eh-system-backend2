@@ -2,6 +2,8 @@
 #![allow(non_snake_case)]
 
 use rocket::{post,routes};
+use rocket_contrib::json;
+use rocket_contrib::json::JsonValue;
 
 use eh_system::album_info::{getAlbumInfo};
 use eh_system::types::album_info_types::AlbumInfo;
@@ -14,7 +16,7 @@ fn getAlbum_api(albumpath:String)
 }
 
 #[post("/get-album-info",format="text/plain",data="<albumpath>")]
-fn getAlbumInfo_api(albumpath:String)
+fn getAlbumInfo_api(albumpath:String)->JsonValue
 {
     let albuminfo:Vec<AlbumInfo>=getAlbumInfo(
         r"testfiles2",
@@ -27,7 +29,9 @@ fn getAlbumInfo_api(albumpath:String)
         albuminfo
     );
 
-    println!("got info {:#?}",albuminfoFixedUrls);
+    println!("{:#?}",albuminfoFixedUrls);
+
+    return json!(albuminfoFixedUrls);
 }
 
 fn main()

@@ -1,5 +1,7 @@
+use serde::{Serialize};
+
 /// album info for a album from file
-#[derive(Debug)]
+#[derive(Debug,Serialize)]
 pub struct AlbumInfo
 {
     pub title:String,
